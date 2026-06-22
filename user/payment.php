@@ -212,7 +212,15 @@ require __DIR__ . '/../includes/navbar.php';
 								</td>
 								<td>Rp <?php echo number_format((float) $payment['amount'], 0, ',', '.'); ?></td>
 								<td>
-									<span class="badge <?php echo $payment['payment_status'] === 'paid' ? 'text-bg-success' : 'text-bg-warning'; ?>"><?php echo htmlspecialchars($payment['payment_status']); ?></span><br>
+									<?php
+									$paymentBadgeColor = 'text-bg-warning';
+									if ($payment['payment_status'] === 'paid') {
+											$paymentBadgeColor = 'text-bg-success';
+									} elseif (in_array($payment['payment_status'], ['failed', 'expired'], true)) {
+											$paymentBadgeColor = 'text-bg-danger';
+									}
+									?>
+									<span class="badge <?php echo $paymentBadgeColor; ?>"><?php echo htmlspecialchars($payment['payment_status']); ?></span><br>
 									<small class="text-secondary"><?php echo htmlspecialchars($payment['created_at']); ?></small>
 								</td>
 								<td>
@@ -221,107 +229,6 @@ require __DIR__ . '/../includes/navbar.php';
 									<?php else: ?>
 										<span class="text-secondary">Selesai</span>
 									<?php endif; ?>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-			</div>
-		<?php endif; ?>
-	</div>
-</main>
-
-<?php require __DIR__ . '/../includes/footer.php'; ?>
-<?php
-session_start();
-require __DIR__ . '/../includes/auth.php';
-require_login();
-<?php
-session_start();
-require __DIR__ . '/../includes/auth.php';
-require_login();
-
-require __DIR__ . '/../config/database.php';
-
-$pageTitle = 'Pembayaran';
-$userId = (int) ($_SESSION['user_id'] ?? 0);
-
-$paymentStatement = $pdo->prepare(
-		'SELECT
-				p.id,
-				p.transaction_id,
-				p.payment_method,
-				p.amount,
-				p.payment_status,
-				p.created_at,
-				b.id AS booking_id,
-				b.booking_date,
-				b.booking_time,
-				b.status AS booking_status,
-				s.service_name,
-				v.vehicle_type,
-				v.brand,
-				v.plate_number
-		FROM payments p
-		INNER JOIN bookings b ON b.id = p.booking_id
-		INNER JOIN services s ON s.id = b.service_id
-		INNER JOIN vehicles v ON v.id = b.vehicle_id
-		WHERE b.user_id = :user_id
-		ORDER BY p.id DESC'
-);
-$paymentStatement->execute(['user_id' => $userId]);
-$payments = $paymentStatement->fetchAll();
-
-require __DIR__ . '/../includes/header.php';
-require __DIR__ . '/../includes/navbar.php';
-?>
-
-<main class="container py-5">
-	<div class="content-card p-4">
-		<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-			<div>
-				<h1 class="h3 mb-1">Pembayaran</h1>
-				<p class="text-secondary mb-0">Lihat invoice dan status pembayaran booking Anda.</p>
-			</div>
-			<a class="btn btn-primary" href="<?php echo htmlspecialchars(app_url('user/booking.php')); ?>">Buat Booking Baru</a>
-		</div>
-
-		<?php if (empty($payments)): ?>
-			<div class="alert alert-info mb-0">Belum ada data pembayaran.</div>
-		<?php else: ?>
-			<div class="table-responsive">
-				<table class="table align-middle">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Booking</th>
-							<th>Kendaraan</th>
-							<th>Transaksi</th>
-							<th>Nominal</th>
-							<th>Status</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach ($payments as $payment): ?>
-							<tr>
-								<td><?php echo (int) $payment['id']; ?></td>
-								<td>
-									#<?php echo (int) $payment['booking_id']; ?><br>
-									<small class="text-secondary"><?php echo htmlspecialchars($payment['service_name']); ?></small><br>
-									<small class="text-secondary"><?php echo htmlspecialchars($payment['booking_date'] . ' / ' . $payment['booking_time']); ?></small>
-								</td>
-								<td>
-									<?php echo htmlspecialchars($payment['vehicle_type'] . ' - ' . $payment['brand']); ?><br>
-									<small class="text-secondary"><?php echo htmlspecialchars($payment['plate_number']); ?></small>
-								</td>
-								<td>
-									<?php echo htmlspecialchars($payment['transaction_id']); ?><br>
-									<small class="text-secondary"><?php echo htmlspecialchars($payment['payment_method']); ?></small>
-								</td>
-								<td>Rp <?php echo number_format((float) $payment['amount'], 0, ',', '.'); ?></td>
-								<td>
-									<span class="badge <?php echo $payment['payment_status'] === 'paid' ? 'text-bg-success' : 'text-bg-warning'; ?>"><?php echo htmlspecialchars($payment['payment_status']); ?></span><br>
-									<small class="text-secondary"><?php echo htmlspecialchars($payment['created_at']); ?></small>
 								</td>
 							</tr>
 						<?php endforeach; ?>

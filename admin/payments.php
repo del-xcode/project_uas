@@ -2,10 +2,6 @@
 session_start();
 require __DIR__ . '/../includes/auth.php';
 require_role('admin');
-<?php
-session_start();
-require __DIR__ . '/../includes/auth.php';
-require_role('admin');
 
 require __DIR__ . '/../config/database.php';
 
@@ -74,7 +70,17 @@ require __DIR__ . '/../includes/navbar.php';
 								<td><?php echo htmlspecialchars($payment['transaction_id']); ?></td>
 								<td><?php echo htmlspecialchars($payment['payment_method']); ?></td>
 								<td>Rp <?php echo number_format((float) $payment['amount'], 0, ',', '.'); ?></td>
-								<td><span class="badge <?php echo $payment['payment_status'] === 'paid' ? 'text-bg-success' : 'text-bg-warning'; ?>"><?php echo htmlspecialchars($payment['payment_status']); ?></span></td>
+								<td>
+									<?php
+									$paymentBadgeColor = 'text-bg-warning';
+									if ($payment['payment_status'] === 'paid') {
+											$paymentBadgeColor = 'text-bg-success';
+									} elseif (in_array($payment['payment_status'], ['failed', 'expired'], true)) {
+											$paymentBadgeColor = 'text-bg-danger';
+									}
+									?>
+									<span class="badge <?php echo $paymentBadgeColor; ?>"><?php echo htmlspecialchars($payment['payment_status']); ?></span>
+								</td>
 								<td><?php echo htmlspecialchars($payment['created_at']); ?></td>
 							</tr>
 						<?php endforeach; ?>

@@ -76,8 +76,30 @@ require __DIR__ . '/../includes/navbar.php';
 								</td>
 								<td><?php echo htmlspecialchars($booking['service_name']); ?></td>
 								<td>Rp <?php echo number_format((float) $booking['price'], 0, ',', '.'); ?></td>
-								<td><span class="badge text-bg-secondary"><?php echo htmlspecialchars($booking['booking_status']); ?></span></td>
-								<td><span class="badge text-bg-warning"><?php echo htmlspecialchars($booking['payment_status'] ?? 'pending'); ?></span></td>
+								<td>
+									<?php
+									$bookingBadgeColor = 'text-bg-secondary';
+									if ($booking['booking_status'] === 'process') {
+											$bookingBadgeColor = 'text-bg-info';
+									} elseif ($booking['booking_status'] === 'done') {
+											$bookingBadgeColor = 'text-bg-success';
+									} elseif ($booking['booking_status'] === 'cancelled') {
+											$bookingBadgeColor = 'text-bg-danger';
+									}
+									?>
+									<span class="badge <?php echo $bookingBadgeColor; ?>"><?php echo htmlspecialchars($booking['booking_status']); ?></span>
+								</td>
+								<td>
+									<?php
+									$paymentBadgeColor = 'text-bg-warning';
+									if (($booking['payment_status'] ?? 'pending') === 'paid') {
+											$paymentBadgeColor = 'text-bg-success';
+									} elseif (in_array(($booking['payment_status'] ?? ''), ['failed', 'expired'], true)) {
+											$paymentBadgeColor = 'text-bg-danger';
+									}
+									?>
+									<span class="badge <?php echo $paymentBadgeColor; ?>"><?php echo htmlspecialchars($booking['payment_status'] ?? 'pending'); ?></span>
+								</td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
