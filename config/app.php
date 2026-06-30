@@ -1,6 +1,8 @@
 <?php
 define('BASE_URL', '/project_uas');
 
+require_once __DIR__ . '/../includes/csrf.php';
+
 function app_url(string $path = ''): string
 {
     $normalizedPath = '/' . ltrim($path, '/');

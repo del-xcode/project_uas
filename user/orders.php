@@ -18,6 +18,7 @@ $bookingStatement = $pdo->prepare(
 				v.vehicle_type,
 				v.brand,
 				v.plate_number,
+				p.id AS payment_id,
 				p.transaction_id,
 				p.payment_method,
 				p.payment_status
@@ -46,7 +47,7 @@ require __DIR__ . '/../includes/navbar.php';
 		</div>
 
 		<?php if (isset($_GET['created'])): ?>
-			<div class="alert alert-success">Booking berhasil dibuat dan status pembayaran masih pending.</div>
+			<div class="alert alert-success"><strong>Booking berhasil dibuat!</strong> Silakan klik tombol <strong>Bayar Sekarang</strong> pada tabel di bawah untuk menyelesaikan pembayaran via Midtrans.</div>
 		<?php endif; ?>
 
 		<?php if (empty($bookings)): ?>
@@ -91,14 +92,20 @@ require __DIR__ . '/../includes/navbar.php';
 								</td>
 								<td>
 									<?php
+									$paymentStatus = $booking['payment_status'] ?? 'pending';
 									$paymentBadgeColor = 'text-bg-warning';
-									if (($booking['payment_status'] ?? 'pending') === 'paid') {
+									if ($paymentStatus === 'paid') {
 											$paymentBadgeColor = 'text-bg-success';
-									} elseif (in_array(($booking['payment_status'] ?? ''), ['failed', 'expired'], true)) {
+									} elseif (in_array($paymentStatus, ['failed', 'expired'], true)) {
 											$paymentBadgeColor = 'text-bg-danger';
 									}
 									?>
-									<span class="badge <?php echo $paymentBadgeColor; ?>"><?php echo htmlspecialchars($booking['payment_status'] ?? 'pending'); ?></span>
+									<span class="badge <?php echo $paymentBadgeColor; ?>"><?php echo htmlspecialchars($paymentStatus); ?></span>
+									<?php if ($booking['booking_status'] !== 'cancelled' && $paymentStatus !== 'paid' && !empty($booking['payment_id'])): ?>
+										<div class="mt-2">
+											<a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars(app_url('user/payment_checkout.php?payment_id=' . (int) $booking['payment_id'])); ?>">Bayar Sekarang</a>
+										</div>
+									<?php endif; ?>
 								</td>
 							</tr>
 						<?php endforeach; ?>

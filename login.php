@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once __DIR__ . '/config/app.php';
+require_csrf();
 $pageError = null;
 
 require __DIR__ . '/config/database.php';
@@ -44,6 +46,7 @@ require __DIR__ . '/includes/navbar.php';
       <div class="alert alert-danger"><?php echo htmlspecialchars($pageError); ?></div>
     <?php endif; ?>
     <form method="post" action="#" class="row g-3">
+      <?php echo csrf_input(); ?>
       <div class="col-12">
         <label class="form-label" for="email">Email</label>
         <input class="form-control form-control-lg" type="email" id="email" name="email" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required>

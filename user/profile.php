@@ -22,18 +22,10 @@ if ($editingVehicleId > 0) {
 	$editingVehicle = $vehicleCheckStatement->fetch();
 }
 
-$deleteVehicleId = (int) ($_GET['delete_vehicle'] ?? 0);
-if ($deleteVehicleId > 0) {
-	$deleteStatement = $pdo->prepare('DELETE FROM vehicles WHERE id = :id AND user_id = :user_id');
-	$deleteStatement->execute([
-		'id' => $deleteVehicleId,
-		'user_id' => $userId,
-	]);
-	header('Location: ' . app_url('user/profile.php'));
-	exit;
-}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	require_csrf();
 	if (isset($_POST['action'])) {
 		if ($_POST['action'] === 'update_user') {
 			$name = trim($_POST['name'] ?? '');
@@ -100,6 +92,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					$pageSuccess = 'Kendaraan berhasil ditambahkan.';
 				}
 			}
+		} elseif ($_POST['action'] === 'delete_vehicle') {
+			$vehicleId = (int) ($_POST['vehicle_id'] ?? 0);
+			if ($vehicleId > 0) {
+				$deleteStatement = $pdo->prepare('DELETE FROM vehicles WHERE id = :id AND user_id = :user_id');
+				$deleteStatement->execute([
+					'id' => $vehicleId,
+					'user_id' => $userId,
+				]);
+				$pageSuccess = 'Kendaraan berhasil dihapus.';
+			}
 		}
 	}
 }
@@ -124,6 +126,7 @@ require __DIR__ . '/../includes/navbar.php';
 					<div class="alert alert-success"><?php echo htmlspecialchars($pageSuccess); ?></div>
 				<?php endif; ?>
 				<form method="post" class="row g-3">
+					<?php echo csrf_input(); ?>
 					<input type="hidden" name="action" value="update_user">
 					<div class="col-12">
 						<label class="form-label" for="name">Nama Lengkap</label>
@@ -155,6 +158,7 @@ require __DIR__ . '/../includes/navbar.php';
 					<div class="alert alert-success"><?php echo htmlspecialchars($pageSuccess); ?></div>
 				<?php endif; ?>
 				<form method="post" class="row g-3">
+					<?php echo csrf_input(); ?>
 					<input type="hidden" name="action" value="<?php echo $editingVehicle ? 'update_vehicle' : 'add_vehicle'; ?>">
 					<input type="hidden" name="vehicle_id" value="<?php echo (int) ($editingVehicle['id'] ?? 0); ?>">
 					<div class="col-12">
@@ -205,7 +209,14 @@ require __DIR__ . '/../includes/navbar.php';
 										<td><?php echo htmlspecialchars($vehicle['vehicle_type']); ?></td>
 										<td><?php echo htmlspecialchars($vehicle['brand']); ?></td>
 										<td><?php echo htmlspecialchars($vehicle['plate_number']); ?></td>
-										<td class="text-end">										<a class="btn btn-sm btn-outline-primary" href="<?php echo htmlspecialchars(app_url('user/profile.php?edit_vehicle=' . (int) $vehicle['id'])); ?>">Edit</a>											<a class="btn btn-sm btn-outline-danger" href="<?php echo htmlspecialchars(app_url('user/profile.php?delete_vehicle=' . (int) $vehicle['id'])); ?>" onclick="return confirm('Hapus kendaraan ini?')">Hapus</a>
+										<td class="text-end">
+											<a class="btn btn-sm btn-outline-primary" href="<?php echo htmlspecialchars(app_url('user/profile.php?edit_vehicle=' . (int) $vehicle['id'])); ?>">Edit</a>
+											<form method="post" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kendaraan ini?')">
+												<?php echo csrf_input(); ?>
+												<input type="hidden" name="action" value="delete_vehicle">
+												<input type="hidden" name="vehicle_id" value="<?php echo (int) $vehicle['id']; ?>">
+												<button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+											</form>
 										</td>
 									</tr>
 								<?php endforeach; ?>

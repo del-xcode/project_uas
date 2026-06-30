@@ -8,15 +8,6 @@ $pageTitle = 'Manajemen Layanan';
 $pageError = null;
 $pageSuccess = null;
 
-if (isset($_GET['delete_service'])) {
-		$deleteId = (int) $_GET['delete_service'];
-		$deleteStatement = $pdo->prepare('DELETE FROM services WHERE id = :id');
-		$deleteStatement->execute(['id' => $deleteId]);
-
-		header('Location: ' . app_url('admin/services.php'));
-		exit;
-}
-
 $editingService = null;
 if (isset($_GET['edit_service'])) {
 		$editId = (int) $_GET['edit_service'];
@@ -26,44 +17,54 @@ if (isset($_GET['edit_service'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-		$serviceId = (int) ($_POST['service_id'] ?? 0);
-		$serviceName = trim($_POST['service_name'] ?? '');
-		$description = trim($_POST['description'] ?? '');
-		$price = (float) ($_POST['price'] ?? 0);
-		$duration = (int) ($_POST['duration'] ?? 0);
-		$status = $_POST['status'] ?? 'active';
+		require_csrf();
+		$action = $_POST['action'] ?? 'save';
 
-		if ($serviceName === '' || $price <= 0 || $duration <= 0) {
-				$pageError = 'Nama layanan, harga, dan durasi wajib diisi dengan benar.';
+		if ($action === 'delete') {
+				$deleteId = (int) ($_POST['service_id'] ?? 0);
+				$deleteStatement = $pdo->prepare('DELETE FROM services WHERE id = :id');
+				$deleteStatement->execute(['id' => $deleteId]);
+				$pageSuccess = 'Layanan berhasil dihapus.';
 		} else {
-				if ($serviceId > 0) {
-						$updateStatement = $pdo->prepare(
-								'UPDATE services SET service_name = :service_name, description = :description, price = :price, duration = :duration, status = :status WHERE id = :id'
-						);
-						$updateStatement->execute([
-								'service_name' => $serviceName,
-								'description' => $description,
-								'price' => $price,
-								'duration' => $duration,
-								'status' => $status === 'inactive' ? 'inactive' : 'active',
-								'id' => $serviceId,
-						]);
+				$serviceId = (int) ($_POST['service_id'] ?? 0);
+				$serviceName = trim($_POST['service_name'] ?? '');
+				$description = trim($_POST['description'] ?? '');
+				$price = (float) ($_POST['price'] ?? 0);
+				$duration = (int) ($_POST['duration'] ?? 0);
+				$status = $_POST['status'] ?? 'active';
 
-						$pageSuccess = 'Layanan berhasil diperbarui.';
-						$editingService = null;
+				if ($serviceName === '' || $price <= 0 || $duration <= 0) {
+						$pageError = 'Nama layanan, harga, dan durasi wajib diisi dengan benar.';
 				} else {
-						$insertStatement = $pdo->prepare(
-								'INSERT INTO services (service_name, description, price, duration, status) VALUES (:service_name, :description, :price, :duration, :status)'
-						);
-						$insertStatement->execute([
-								'service_name' => $serviceName,
-								'description' => $description,
-								'price' => $price,
-								'duration' => $duration,
-								'status' => $status === 'inactive' ? 'inactive' : 'active',
-						]);
+						if ($serviceId > 0) {
+								$updateStatement = $pdo->prepare(
+										'UPDATE services SET service_name = :service_name, description = :description, price = :price, duration = :duration, status = :status WHERE id = :id'
+								);
+								$updateStatement->execute([
+										'service_name' => $serviceName,
+										'description' => $description,
+										'price' => $price,
+										'duration' => $duration,
+										'status' => $status === 'inactive' ? 'inactive' : 'active',
+										'id' => $serviceId,
+								]);
 
-						$pageSuccess = 'Layanan berhasil ditambahkan.';
+								$pageSuccess = 'Layanan berhasil diperbarui.';
+								$editingService = null;
+						} else {
+								$insertStatement = $pdo->prepare(
+										'INSERT INTO services (service_name, description, price, duration, status) VALUES (:service_name, :description, :price, :duration, :status)'
+								);
+								$insertStatement->execute([
+										'service_name' => $serviceName,
+										'description' => $description,
+										'price' => $price,
+										'duration' => $duration,
+										'status' => $status === 'inactive' ? 'inactive' : 'active',
+								]);
+
+								$pageSuccess = 'Layanan berhasil ditambahkan.';
+						}
 				}
 		}
 }
@@ -87,6 +88,7 @@ require __DIR__ . '/../includes/navbar.php';
 					<div class="alert alert-success"><?php echo htmlspecialchars($pageSuccess); ?></div>
 				<?php endif; ?>
 				<form method="post" class="row g-3">
+					<?php echo csrf_input(); ?>
 					<input type="hidden" name="service_id" value="<?php echo (int) ($editingService['id'] ?? 0); ?>">
 					<div class="col-12">
 						<label class="form-label" for="service_name">Nama Layanan</label>
@@ -149,7 +151,12 @@ require __DIR__ . '/../includes/navbar.php';
 										<td><span class="badge <?php echo $service['status'] === 'active' ? 'text-bg-success' : 'text-bg-secondary'; ?>"><?php echo htmlspecialchars($service['status']); ?></span></td>
 										<td class="text-end">
 											<a class="btn btn-sm btn-outline-primary" href="<?php echo htmlspecialchars(app_url('admin/services.php?edit_service=' . (int) $service['id'])); ?>">Edit</a>
-											<a class="btn btn-sm btn-outline-danger" href="<?php echo htmlspecialchars(app_url('admin/services.php?delete_service=' . (int) $service['id'])); ?>" onclick="return confirm('Hapus layanan ini?')">Hapus</a>
+											<form method="post" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus layanan ini?')">
+												<?php echo csrf_input(); ?>
+												<input type="hidden" name="action" value="delete">
+												<input type="hidden" name="service_id" value="<?php echo (int) $service['id']; ?>">
+												<button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+											</form>
 										</td>
 									</tr>
 								<?php endforeach; ?>

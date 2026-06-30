@@ -16,6 +16,7 @@ $serviceStatement = $pdo->query('SELECT id, service_name, description, price, du
 $services = $serviceStatement->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		require_csrf();
 		$vehicleId = (int) ($_POST['vehicle_id'] ?? 0);
 		$serviceId = (int) ($_POST['service_id'] ?? 0);
 		$bookingDate = $_POST['booking_date'] ?? '';
@@ -107,8 +108,9 @@ require __DIR__ . '/../includes/navbar.php';
 		<div class="col-lg-8">
 			<div class="content-card p-4">
 				<form method="post" class="row g-3">
+					<?php echo csrf_input(); ?>
 					<div class="col-md-6">
-						<label class="form-label" for="vehicle_id">Kendaraan</label>
+						<label class="form-label fw-semibold" for="vehicle_id"><i class="bi bi-car-front text-teal me-1"></i> Kendaraan</label>
 						<select class="form-select" id="vehicle_id" name="vehicle_id" required <?php echo empty($vehicles) ? 'disabled' : ''; ?>>
 							<option value="">Pilih kendaraan</option>
 							<?php foreach ($vehicles as $vehicle): ?>
@@ -117,7 +119,7 @@ require __DIR__ . '/../includes/navbar.php';
 						</select>
 					</div>
 					<div class="col-md-6">
-						<label class="form-label" for="service_id">Layanan</label>
+						<label class="form-label fw-semibold" for="service_id"><i class="bi bi-award text-teal me-1"></i> Layanan</label>
 						<select class="form-select" id="service_id" name="service_id" required <?php echo empty($services) ? 'disabled' : ''; ?>>
 							<option value="">Pilih layanan</option>
 							<?php foreach ($services as $service): ?>
@@ -126,11 +128,11 @@ require __DIR__ . '/../includes/navbar.php';
 						</select>
 					</div>
 					<div class="col-md-6">
-						<label class="form-label" for="booking_date">Tanggal Booking</label>
+						<label class="form-label fw-semibold" for="booking_date"><i class="bi bi-calendar-event text-teal me-1"></i> Tanggal Booking</label>
 						<input class="form-control" type="date" id="booking_date" name="booking_date" required min="<?php echo htmlspecialchars(date('Y-m-d')); ?>">
 					</div>
 					<div class="col-md-6">
-						<label class="form-label" for="booking_time">Jam Booking</label>
+						<label class="form-label fw-semibold" for="booking_time"><i class="bi bi-clock text-teal me-1"></i> Jam Booking</label>
 						<input class="form-control" type="time" id="booking_time" name="booking_time" required>
 					</div>
 					<div class="col-12 d-grid d-md-flex justify-content-md-end">

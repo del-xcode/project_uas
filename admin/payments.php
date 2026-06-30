@@ -7,27 +7,49 @@ require __DIR__ . '/../config/database.php';
 
 $pageTitle = 'Manajemen Pembayaran';
 
-$paymentStatement = $pdo->query(
-		'SELECT
-				p.id,
-				p.transaction_id,
-				p.payment_method,
-				p.amount,
-				p.payment_status,
-				p.created_at,
-				b.id AS booking_id,
-				b.booking_date,
-				b.booking_time,
-				b.status AS booking_status,
-				u.name AS user_name,
-				u.email AS user_email,
-				s.service_name
-		FROM payments p
-		INNER JOIN bookings b ON b.id = p.booking_id
-		INNER JOIN users u ON u.id = b.user_id
-		INNER JOIN services s ON s.id = b.service_id
-		ORDER BY p.id DESC'
-);
+$search = trim($_GET['search'] ?? '');
+$status = trim($_GET['status'] ?? '');
+
+$query = 'SELECT
+            p.id,
+            p.transaction_id,
+            p.payment_method,
+            p.amount,
+            p.payment_status,
+            p.created_at,
+            b.id AS booking_id,
+            b.booking_date,
+            b.booking_time,
+            b.status AS booking_status,
+            u.name AS user_name,
+            u.email AS user_email,
+            s.service_name
+        FROM payments p
+        INNER JOIN bookings b ON b.id = p.booking_id
+        INNER JOIN users u ON u.id = b.user_id
+        INNER JOIN services s ON s.id = b.service_id';
+
+$conditions = [];
+$params = [];
+
+if ($search !== '') {
+    $conditions[] = '(p.transaction_id LIKE :search OR u.name LIKE :search OR u.email LIKE :search)';
+    $params['search'] = "%{$search}%";
+}
+
+if ($status !== '') {
+    $conditions[] = 'p.payment_status = :status';
+    $params['status'] = $status;
+}
+
+if (!empty($conditions)) {
+    $query .= ' WHERE ' . implode(' AND ', $conditions);
+}
+
+$query .= ' ORDER BY p.id DESC';
+
+$paymentStatement = $pdo->prepare($query);
+$paymentStatement->execute($params);
 $payments = $paymentStatement->fetchAll();
 
 require __DIR__ . '/../includes/header.php';
@@ -36,9 +58,39 @@ require __DIR__ . '/../includes/navbar.php';
 
 <main class="container py-5">
 	<div class="content-card p-4">
-		<h1 class="h3 mb-3">Manajemen Pembayaran</h1>
+		<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+			<div>
+				<h1 class="h3 mb-1">Manajemen Pembayaran</h1>
+				<p class="text-secondary mb-0">Kelola dan pantau seluruh transaksi pembayaran masuk.</p>
+			</div>
+		</div>
+
+		<!-- Search and Filter Form -->
+		<form method="get" class="row g-2 mb-4">
+			<div class="col-md-5">
+				<input type="text" class="form-control" name="search" placeholder="Cari Order ID, Nama, atau Email..." value="<?php echo htmlspecialchars($search); ?>">
+			</div>
+			<div class="col-md-3">
+				<select class="form-select" name="status">
+					<option value="">Semua Status</option>
+					<option value="pending" <?php echo $status === 'pending' ? 'selected' : ''; ?>>Pending</option>
+					<option value="paid" <?php echo $status === 'paid' ? 'selected' : ''; ?>>Paid</option>
+					<option value="failed" <?php echo $status === 'failed' ? 'selected' : ''; ?>>Failed</option>
+					<option value="expired" <?php echo $status === 'expired' ? 'selected' : ''; ?>>Expired</option>
+				</select>
+			</div>
+			<div class="col-md-2 d-grid">
+				<button type="submit" class="btn btn-primary">Filter</button>
+			</div>
+			<?php if ($search !== '' || $status !== ''): ?>
+				<div class="col-md-2 d-grid">
+					<a href="payments.php" class="btn btn-outline-secondary">Reset</a>
+				</div>
+			<?php endif; ?>
+		</form>
+
 		<?php if (empty($payments)): ?>
-			<div class="alert alert-info mb-0">Belum ada transaksi pembayaran.</div>
+			<div class="alert alert-info mb-0">Tidak ada transaksi pembayaran ditemukan.</div>
 		<?php else: ?>
 			<div class="table-responsive">
 				<table class="table align-middle">

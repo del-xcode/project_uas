@@ -11,6 +11,7 @@ $pageSuccess = null;
 $userId = (int) ($_SESSION['user_id'] ?? 0);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_payment'])) {
+		require_csrf();
 		$bookingId = (int) ($_POST['booking_id'] ?? 0);
 
 		if ($bookingId <= 0) {
@@ -165,6 +166,7 @@ require __DIR__ . '/../includes/navbar.php';
 									<td>Rp <?php echo number_format((float) $booking['price'], 0, ',', '.'); ?></td>
 									<td>
 										<form method="post" class="d-inline">
+											<?php echo csrf_input(); ?>
 											<input type="hidden" name="booking_id" value="<?php echo (int) $booking['id']; ?>">
 											<button class="btn btn-sm btn-primary" type="submit" name="create_payment" value="1">Buat Invoice</button>
 										</form>

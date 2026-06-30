@@ -9,6 +9,7 @@ $pageError = null;
 $pageSuccess = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		require_csrf();
 		$bookingId = (int) ($_POST['booking_id'] ?? 0);
 		$bookingStatus = $_POST['booking_status'] ?? 'pending';
 		$paymentStatus = $_POST['payment_status'] ?? 'pending';
@@ -143,6 +144,7 @@ require __DIR__ . '/../includes/navbar.php';
 								</td>
 								<td>
 									<form method="post" class="d-grid gap-2">
+										<?php echo csrf_input(); ?>
 										<input type="hidden" name="booking_id" value="<?php echo (int) $booking['id']; ?>">
 										<select class="form-select form-select-sm" name="booking_status">
 											<option value="pending" <?php echo $booking['booking_status'] === 'pending' ? 'selected' : ''; ?>>pending</option>

@@ -11,6 +11,7 @@ $dashboardUrl = $userRole === 'admin'
 $bookingUrl = app_url('user/booking.php');
 $profileUrl = app_url('user/profile.php');
 $ordersUrl = app_url('user/orders.php');
+$paymentUrl = app_url('user/payment.php');
 $adminServicesUrl = app_url('admin/services.php');
 $adminOrdersUrl = app_url('admin/orders.php');
 $adminUsersUrl = app_url('admin/users.php');
@@ -20,7 +21,10 @@ $adminReportsUrl = app_url('admin/reports.php');
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="<?php echo htmlspecialchars(app_url('index.php')); ?>">CarWash</a>
+    <a class="navbar-brand fw-bold d-flex align-items-center" href="<?php echo htmlspecialchars(app_url('index.php')); ?>">
+      <i class="bi bi-water text-teal me-2" style="font-size: 1.5rem;"></i>
+      <span>CarWash</span>
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -41,6 +45,7 @@ $adminReportsUrl = app_url('admin/reports.php');
             <li class="nav-item"><a class="nav-link" href="<?php echo htmlspecialchars($profileUrl); ?>">Kendaraan</a></li>
             <li class="nav-item"><a class="nav-link" href="<?php echo htmlspecialchars($bookingUrl); ?>">Booking</a></li>
             <li class="nav-item"><a class="nav-link" href="<?php echo htmlspecialchars($ordersUrl); ?>">Riwayat</a></li>
+            <li class="nav-item"><a class="nav-link" href="<?php echo htmlspecialchars($paymentUrl); ?>">Pembayaran</a></li>
           <?php endif; ?>
           <li class="nav-item"><a class="nav-link" href="<?php echo htmlspecialchars($dashboardUrl); ?>">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link" href="<?php echo htmlspecialchars(app_url('logout.php')); ?>">Logout</a></li>
