@@ -118,7 +118,10 @@ require __DIR__ . '/../includes/navbar.php';
 	<div class="row g-4 mb-4">
 		<div class="col-lg-6">
 			<div class="content-card p-4">
-				<h1 class="h3 mb-3">Data Akun</h1>
+				<h1 class="h3 mb-3 d-flex align-items-center">
+					<i class="bi bi-person-badge text-teal me-2"></i>
+					<span>Data Akun</span>
+				</h1>
 				<?php if ($pageError !== null && !isset($_POST['vehicle_id'])): ?>
 					<div class="alert alert-danger"><?php echo htmlspecialchars($pageError); ?></div>
 				<?php endif; ?>
@@ -129,15 +132,15 @@ require __DIR__ . '/../includes/navbar.php';
 					<?php echo csrf_input(); ?>
 					<input type="hidden" name="action" value="update_user">
 					<div class="col-12">
-						<label class="form-label" for="name">Nama Lengkap</label>
+						<label class="form-label fw-semibold" for="name"><i class="bi bi-person-fill text-teal me-1"></i> Nama Lengkap</label>
 						<input class="form-control" type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name'] ?? ''); ?>" required>
 					</div>
 					<div class="col-12">
-						<label class="form-label" for="email">Email</label>
+						<label class="form-label fw-semibold" for="email"><i class="bi bi-envelope-fill text-teal me-1"></i> Email</label>
 						<input class="form-control" type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required>
 					</div>
 					<div class="col-12">
-						<label class="form-label" for="phone">Nomor Telepon</label>
+						<label class="form-label fw-semibold" for="phone"><i class="bi bi-telephone-fill text-teal me-1"></i> Nomor Telepon</label>
 						<input class="form-control" type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" required>
 					</div>
 					<div class="col-12 d-grid">
@@ -150,7 +153,10 @@ require __DIR__ . '/../includes/navbar.php';
 	<div class="row g-4">
 		<div class="col-lg-5">
 			<div class="content-card p-4 h-100">
-				<h1 class="h3 mb-3"><?php echo $editingVehicle ? 'Edit Kendaraan' : 'Tambah Kendaraan'; ?></h1>
+				<h1 class="h3 mb-3 d-flex align-items-center">
+					<i class="bi bi-plus-circle text-teal me-2"></i>
+					<span><?php echo $editingVehicle ? 'Edit Kendaraan' : 'Tambah Kendaraan'; ?></span>
+				</h1>
 				<?php if ($pageError !== null && isset($_POST['vehicle_id'])): ?>
 					<div class="alert alert-danger"><?php echo htmlspecialchars($pageError); ?></div>
 				<?php endif; ?>
@@ -162,7 +168,7 @@ require __DIR__ . '/../includes/navbar.php';
 					<input type="hidden" name="action" value="<?php echo $editingVehicle ? 'update_vehicle' : 'add_vehicle'; ?>">
 					<input type="hidden" name="vehicle_id" value="<?php echo (int) ($editingVehicle['id'] ?? 0); ?>">
 					<div class="col-12">
-						<label class="form-label" for="vehicle_type">Jenis Kendaraan</label>
+						<label class="form-label fw-semibold" for="vehicle_type"><i class="bi bi-car-front-fill text-teal me-1"></i> Jenis Kendaraan</label>
 						<select class="form-select" id="vehicle_type" name="vehicle_type" required>
 							<option value="">Pilih jenis kendaraan</option>
 							<option value="Motor" <?php echo (($editingVehicle['vehicle_type'] ?? '') === 'Motor') ? 'selected' : ''; ?>>Motor</option>
@@ -171,11 +177,11 @@ require __DIR__ . '/../includes/navbar.php';
 						</select>
 					</div>
 					<div class="col-12">
-						<label class="form-label" for="brand">Merk / Model</label>
+						<label class="form-label fw-semibold" for="brand"><i class="bi bi-tags-fill text-teal me-1"></i> Merk / Model</label>
 						<input class="form-control" type="text" id="brand" name="brand" value="<?php echo htmlspecialchars($editingVehicle['brand'] ?? ''); ?>" required>
 					</div>
 					<div class="col-12">
-						<label class="form-label" for="plate_number">Nomor Plat</label>
+						<label class="form-label fw-semibold" for="plate_number"><i class="bi bi-card-text text-teal me-1"></i> Nomor Plat</label>
 						<input class="form-control" type="text" id="plate_number" name="plate_number" value="<?php echo htmlspecialchars($editingVehicle['plate_number'] ?? ''); ?>" required>
 					</div>
 					<div class="col-12 d-grid d-md-flex gap-2">
@@ -189,7 +195,10 @@ require __DIR__ . '/../includes/navbar.php';
 		</div>
 		<div class="col-lg-7">
 			<div class="content-card p-4 h-100">
-				<h2 class="h4 mb-3">Daftar Kendaraan</h2>
+				<h2 class="h4 mb-3 d-flex align-items-center">
+					<i class="bi bi-list-ul text-teal me-2"></i>
+					<span>Daftar Kendaraan</span>
+				</h2>
 				<?php if (empty($vehicles)): ?>
 					<div class="alert alert-info mb-0">Belum ada kendaraan. Tambahkan kendaraan terlebih dahulu agar bisa booking.</div>
 				<?php else: ?>

@@ -52,7 +52,10 @@ require __DIR__ . '/../includes/navbar.php';
   <div class="content-card p-4">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
       <div>
-        <h1 class="h3 mb-1">Manajemen User</h1>
+        <h1 class="h3 mb-1 d-flex align-items-center">
+          <i class="bi bi-people-fill text-teal me-2"></i>
+          <span>Manajemen User</span>
+        </h1>
         <p class="text-secondary mb-0">Kelola akun pengguna, ubah hak akses, dan hapus akun.</p>
       </div>
     </div>
