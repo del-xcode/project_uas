@@ -43,7 +43,7 @@ require __DIR__ . '/includes/navbar.php';
           <span class="eyebrow">CarWash Management System</span>
           <h1 class="display-4 fw-bold mt-3">Kelola booking cuci kendaraan lebih cepat, rapi, dan modern.</h1>
           <p class="lead text-secondary mt-3">
-            Sistem berbasis PHP Native untuk booking, pembayaran online Midtrans, dan manajemen layanan cuci kendaraan.
+            Sistem booking, pembayaran online Midtrans, dan manajemen layanan cuci kendaraan.
           </p>
           <div class="d-flex gap-3 mt-4 flex-wrap">
             <a class="btn btn-primary btn-lg px-4 rounded-pill" href="<?php echo htmlspecialchars(app_url('register.php')); ?>">Daftar Sekarang</a>
