@@ -88,7 +88,10 @@ require __DIR__ . '/../includes/navbar.php';
   <div class="content-card p-4">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
       <div>
-        <h1 class="h3 mb-1">Laporan</h1>
+        <h1 class="h3 mb-1 d-flex align-items-center">
+          <i class="bi bi-bar-chart-line text-teal me-2"></i>
+          <span>Laporan</span>
+        </h1>
         <p class="text-secondary mb-0 d-print-none">Ringkasan booking dan pendapatan sistem.</p>
         <?php if ($startDate !== '' || $endDate !== ''): ?>
           <p class="text-teal mb-0 d-none d-print-block fw-bold">
@@ -125,26 +128,38 @@ require __DIR__ . '/../includes/navbar.php';
 
     <div class="row g-3 mb-4">
       <div class="col-md-3 col-6">
-        <div class="stat-card h-100">
-          <span class="stat-label">Total Booking</span>
+        <div class="stat-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <i class="bi bi-journal-check text-teal fs-3 mb-2 d-block"></i>
+            <span class="stat-label">Total Booking</span>
+          </div>
           <strong><?php echo (int) ($summary['total_bookings'] ?? 0); ?></strong>
         </div>
       </div>
       <div class="col-md-3 col-6">
-        <div class="stat-card h-100">
-          <span class="stat-label">Total Pembayaran</span>
+        <div class="stat-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <i class="bi bi-credit-card text-teal fs-3 mb-2 d-block"></i>
+            <span class="stat-label">Total Pembayaran</span>
+          </div>
           <strong><?php echo (int) ($summary['total_payments'] ?? 0); ?></strong>
         </div>
       </div>
       <div class="col-md-3 col-6">
-        <div class="stat-card h-100">
-          <span class="stat-label">Pendapatan Paid</span>
+        <div class="stat-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <i class="bi bi-cash-coin text-success fs-3 mb-2 d-block"></i>
+            <span class="stat-label">Pendapatan Paid</span>
+          </div>
           <strong>Rp <?php echo number_format((float) ($summary['total_income'] ?? 0), 0, ',', '.'); ?></strong>
         </div>
       </div>
       <div class="col-md-3 col-6">
-        <div class="stat-card h-100">
-          <span class="stat-label">Booking Selesai</span>
+        <div class="stat-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <i class="bi bi-check2-circle text-teal fs-3 mb-2 d-block"></i>
+            <span class="stat-label">Booking Selesai</span>
+          </div>
           <strong><?php echo (int) ($summary['completed_bookings'] ?? 0); ?></strong>
         </div>
       </div>
@@ -153,7 +168,10 @@ require __DIR__ . '/../includes/navbar.php';
     <div class="row g-4">
       <div class="col-lg-6">
         <div class="content-card p-4 h-100">
-          <h2 class="h5 mb-3">Status Booking</h2>
+          <h2 class="h5 mb-3 d-flex align-items-center">
+            <i class="bi bi-calendar-event text-teal me-2"></i>
+            <span>Status Booking</span>
+          </h2>
           <?php if (empty($bookingStatuses)): ?>
             <div class="alert alert-info mb-0">Belum ada data booking.</div>
           <?php else: ?>
@@ -180,7 +198,10 @@ require __DIR__ . '/../includes/navbar.php';
       </div>
       <div class="col-lg-6">
         <div class="content-card p-4 h-100">
-          <h2 class="h5 mb-3">Status Pembayaran</h2>
+          <h2 class="h5 mb-3 d-flex align-items-center">
+            <i class="bi bi-wallet2 text-teal me-2"></i>
+            <span>Status Pembayaran</span>
+          </h2>
           <?php if (empty($paymentStatuses)): ?>
             <div class="alert alert-info mb-0">Belum ada data pembayaran.</div>
           <?php else: ?>

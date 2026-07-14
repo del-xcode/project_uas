@@ -80,7 +80,10 @@ require __DIR__ . '/../includes/navbar.php';
 	<div class="row g-4">
 		<div class="col-lg-5">
 			<div class="content-card p-4 h-100">
-				<h1 class="h3 mb-3"><?php echo $editingService ? 'Edit Layanan' : 'Tambah Layanan'; ?></h1>
+				<h1 class="h3 mb-3 d-flex align-items-center">
+					<i class="<?php echo $editingService ? 'bi bi-pencil-square' : 'bi bi-plus-circle'; ?> text-teal me-2"></i>
+					<span><?php echo $editingService ? 'Edit Layanan' : 'Tambah Layanan'; ?></span>
+				</h1>
 				<?php if ($pageError !== null): ?>
 					<div class="alert alert-danger"><?php echo htmlspecialchars($pageError); ?></div>
 				<?php endif; ?>
@@ -91,23 +94,23 @@ require __DIR__ . '/../includes/navbar.php';
 					<?php echo csrf_input(); ?>
 					<input type="hidden" name="service_id" value="<?php echo (int) ($editingService['id'] ?? 0); ?>">
 					<div class="col-12">
-						<label class="form-label" for="service_name">Nama Layanan</label>
+						<label class="form-label fw-semibold" for="service_name"><i class="bi bi-tag-fill text-teal me-1"></i> Nama Layanan</label>
 						<input class="form-control" type="text" id="service_name" name="service_name" value="<?php echo htmlspecialchars($editingService['service_name'] ?? ''); ?>" required>
 					</div>
 					<div class="col-12">
-						<label class="form-label" for="description">Deskripsi</label>
+						<label class="form-label fw-semibold" for="description"><i class="bi bi-card-text text-teal me-1"></i> Deskripsi</label>
 						<textarea class="form-control" id="description" name="description" rows="4"><?php echo htmlspecialchars($editingService['description'] ?? ''); ?></textarea>
 					</div>
 					<div class="col-md-6">
-						<label class="form-label" for="price">Harga</label>
+						<label class="form-label fw-semibold" for="price"><i class="bi bi-cash text-teal me-1"></i> Harga</label>
 						<input class="form-control" type="number" id="price" name="price" min="0" step="1" value="<?php echo htmlspecialchars((string) ($editingService['price'] ?? '')); ?>" required>
 					</div>
 					<div class="col-md-6">
-						<label class="form-label" for="duration">Durasi (menit)</label>
+						<label class="form-label fw-semibold" for="duration"><i class="bi bi-clock-fill text-teal me-1"></i> Durasi (menit)</label>
 						<input class="form-control" type="number" id="duration" name="duration" min="1" step="1" value="<?php echo htmlspecialchars((string) ($editingService['duration'] ?? '')); ?>" required>
 					</div>
 					<div class="col-12">
-						<label class="form-label" for="status">Status</label>
+						<label class="form-label fw-semibold" for="status"><i class="bi bi-toggle-on text-teal me-1"></i> Status</label>
 						<select class="form-select" id="status" name="status">
 							<option value="active" <?php echo (($editingService['status'] ?? 'active') === 'active') ? 'selected' : ''; ?>>Active</option>
 							<option value="inactive" <?php echo (($editingService['status'] ?? '') === 'inactive') ? 'selected' : ''; ?>>Inactive</option>
@@ -124,7 +127,10 @@ require __DIR__ . '/../includes/navbar.php';
 		</div>
 		<div class="col-lg-7">
 			<div class="content-card p-4 h-100">
-				<h2 class="h4 mb-3">Daftar Layanan</h2>
+				<h2 class="h4 mb-3 d-flex align-items-center">
+					<i class="bi bi-list-task text-teal me-2"></i>
+					<span>Daftar Layanan</span>
+				</h2>
 				<?php if (empty($services)): ?>
 					<div class="alert alert-info mb-0">Belum ada data layanan.</div>
 				<?php else: ?>

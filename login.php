@@ -41,22 +41,28 @@ require __DIR__ . '/includes/navbar.php';
 
 <main class="container py-5">
   <div class="auth-card mx-auto">
-    <h1 class="h3 mb-3">Login</h1>
+    <h1 class="h3 mb-3 d-flex align-items-center justify-content-center">
+      <i class="bi bi-box-arrow-in-right text-teal me-2"></i>
+      <span>Masuk Akun</span>
+    </h1>
     <?php if ($pageError !== null): ?>
       <div class="alert alert-danger"><?php echo htmlspecialchars($pageError); ?></div>
     <?php endif; ?>
     <form method="post" action="#" class="row g-3">
       <?php echo csrf_input(); ?>
       <div class="col-12">
-        <label class="form-label" for="email">Email</label>
-        <input class="form-control form-control-lg" type="email" id="email" name="email" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required>
+        <label class="form-label fw-semibold" for="email"><i class="bi bi-envelope-fill text-teal me-1"></i> Email</label>
+        <input class="form-control" type="email" id="email" name="email" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required>
       </div>
       <div class="col-12">
-        <label class="form-label" for="password">Password</label>
-        <input class="form-control form-control-lg" type="password" id="password" name="password" required>
+        <label class="form-label fw-semibold" for="password"><i class="bi bi-lock-fill text-teal me-1"></i> Password</label>
+        <input class="form-control" type="password" id="password" name="password" required>
       </div>
       <div class="col-12 d-grid">
         <button class="btn btn-primary btn-lg" type="submit">Masuk</button>
+      </div>
+      <div class="col-12 text-center mt-3">
+        <span class="text-secondary small">Belum punya akun? <a href="<?php echo htmlspecialchars(app_url('register.php')); ?>" class="text-teal fw-semibold text-decoration-none">Daftar Sekarang</a></span>
       </div>
     </form>
   </div>

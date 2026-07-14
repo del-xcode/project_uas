@@ -60,7 +60,10 @@ require __DIR__ . '/../includes/navbar.php';
 	<div class="content-card p-4">
 		<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
 			<div>
-				<h1 class="h3 mb-1">Manajemen Pembayaran</h1>
+				<h1 class="h3 mb-1 d-flex align-items-center">
+					<i class="bi bi-credit-card text-teal me-2"></i>
+					<span>Manajemen Pembayaran</span>
+				</h1>
 				<p class="text-secondary mb-0">Kelola dan pantau seluruh transaksi pembayaran masuk.</p>
 			</div>
 		</div>

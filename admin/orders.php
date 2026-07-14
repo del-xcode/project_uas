@@ -75,7 +75,10 @@ require __DIR__ . '/../includes/navbar.php';
 
 <main class="container py-5">
 	<div class="content-card p-4">
-		<h1 class="h3 mb-3">Manajemen Booking</h1>
+		<h1 class="h3 mb-3 d-flex align-items-center">
+			<i class="bi bi-calendar3 text-teal me-2"></i>
+			<span>Manajemen Booking</span>
+		</h1>
 		<?php if ($pageError !== null): ?>
 			<div class="alert alert-danger"><?php echo htmlspecialchars($pageError); ?></div>
 		<?php endif; ?>
