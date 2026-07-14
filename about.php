@@ -38,8 +38,8 @@ require __DIR__ . '/includes/navbar.php';
   <div class="row g-4">
     <div class="col-md-4">
       <div class="content-card p-4 h-100 transition-card">
-        <div class="mb-3 d-inline-block" style="font-size: 2rem;">
-          ⏱️
+        <div class="mb-3">
+          <i class="bi bi-clock-history text-teal fs-1"></i>
         </div>
         <h3 class="h5 fw-bold mb-2">Hemat Waktu</h3>
         <p class="text-secondary mb-0">Atur jadwal pencucian dari mana saja tanpa perlu mengantre berjam-jam di lokasi cuci.</p>
@@ -47,8 +47,8 @@ require __DIR__ . '/includes/navbar.php';
     </div>
     <div class="col-md-4">
       <div class="content-card p-4 h-100 transition-card">
-        <div class="mb-3 d-inline-block" style="font-size: 2rem;">
-          💳
+        <div class="mb-3">
+          <i class="bi bi-credit-card text-teal fs-1"></i>
         </div>
         <h3 class="h5 fw-bold mb-2">Pembayaran Online</h3>
         <p class="text-secondary mb-0">Integrasi gateway pembayaran Midtrans yang aman dengan dukungan QRIS, Transfer Bank, dan E-Wallet.</p>
@@ -56,8 +56,8 @@ require __DIR__ . '/includes/navbar.php';
     </div>
     <div class="col-md-4">
       <div class="content-card p-4 h-100 transition-card">
-        <div class="mb-3 d-inline-block" style="font-size: 2rem;">
-          ✨
+        <div class="mb-3">
+          <i class="bi bi-stars text-teal fs-1"></i>
         </div>
         <h3 class="h5 fw-bold mb-2">Layanan Premium</h3>
         <p class="text-secondary mb-0">Dikerjakan oleh tenaga profesional menggunakan bahan pembersih berkualitas tinggi dan peralatan modern.</p>
