@@ -35,7 +35,10 @@ require __DIR__ . '/includes/navbar.php';
             <p class="text-secondary mb-4"><?php echo htmlspecialchars($service['description'] ?? ''); ?></p>
             <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
               <span class="fs-4 fw-bold text-teal">Rp <?php echo number_format((float) $service['price'], 0, ',', '.'); ?></span>
-              <a class="btn btn-sm btn-primary rounded-pill px-3" href="<?php echo htmlspecialchars(app_url('user/booking.php')); ?>">Booking</a>
+              <a class="btn btn-sm btn-primary rounded-pill px-3 d-flex align-items-center" href="<?php echo htmlspecialchars(app_url('user/booking.php')); ?>">
+                <i class="bi bi-calendar-check me-1"></i>
+                <span>Booking</span>
+              </a>
             </div>
           </div>
         </div>
