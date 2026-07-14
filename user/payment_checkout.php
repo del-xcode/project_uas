@@ -14,6 +14,42 @@ $snapUrl = null;
 $userId = (int) ($_SESSION['user_id'] ?? 0);
 $paymentId = (int) ($_GET['payment_id'] ?? 0);
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['simulate_payment'])) {
+    require_csrf();
+    $postPaymentId = (int) ($_POST['payment_id'] ?? 0);
+
+    $checkPayment = $pdo->prepare(
+        'SELECT p.id, p.booking_id FROM payments p
+         INNER JOIN bookings b ON b.id = p.booking_id
+         WHERE p.id = :payment_id AND b.user_id = :user_id LIMIT 1'
+    );
+    $checkPayment->execute(['payment_id' => $postPaymentId, 'user_id' => $userId]);
+    $paymentRow = $checkPayment->fetch();
+
+    if ($paymentRow) {
+        try {
+            $pdo->beginTransaction();
+
+            $updatePayment = $pdo->prepare('UPDATE payments SET payment_status = "paid" WHERE id = :id');
+            $updatePayment->execute(['id' => $paymentRow['id']]);
+
+            $updateBooking = $pdo->prepare('UPDATE bookings SET status = "process" WHERE id = :id');
+            $updateBooking->execute(['id' => $paymentRow['booking_id']]);
+
+            $pdo->commit();
+            header('Location: ' . app_url('user/payment.php?simulated=1'));
+            exit;
+        } catch (Throwable $exception) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            $pageError = 'Simulasi pembayaran gagal: ' . $exception->getMessage();
+        }
+    } else {
+        $pageError = 'Data pembayaran tidak valid.';
+    }
+}
+
 $paymentStatement = $pdo->prepare(
     'SELECT
         p.id,
@@ -46,9 +82,11 @@ $paymentStatement->execute([
 ]);
 $payment = $paymentStatement->fetch();
 
+$midtransConfigured = midtrans_is_configured();
+
 if (!$payment) {
     $pageError = 'Pembayaran tidak ditemukan.';
-} elseif (midtrans_is_configured()) {
+} elseif ($midtransConfigured) {
     $payload = [
         'transaction_details' => [
             'order_id' => $payment['transaction_id'],
@@ -77,8 +115,6 @@ if (!$payment) {
     } catch (Throwable $exception) {
         $pageError = $exception->getMessage();
     }
-} else {
-    $pageError = 'Konfigurasi Midtrans belum diisi. Set server key dan client key terlebih dahulu.';
 }
 
 require __DIR__ . '/../includes/header.php';
@@ -120,11 +156,23 @@ require __DIR__ . '/../includes/navbar.php';
             </ol>
             <div class="d-grid gap-2 mt-4">
               <?php if ($snapToken !== null): ?>
-                <button class="btn btn-primary btn-lg" id="pay-button" type="button">Bayar Sekarang</button>
+                <button class="btn btn-primary btn-lg" id="pay-button" type="button"><i class="bi bi-wallet2 me-2"></i> Bayar Sekarang</button>
                 <small class="text-secondary">Token siap digunakan. Jika browser memblokir popup, gunakan tombol alternatif.</small>
                 <?php if ($snapUrl !== null): ?>
-                  <a class="btn btn-outline-primary" href="<?php echo htmlspecialchars($snapUrl); ?>" target="_blank" rel="noopener">Buka Halaman Midtrans</a>
+                  <a class="btn btn-outline-primary mt-2" href="<?php echo htmlspecialchars($snapUrl); ?>" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-2"></i> Buka Halaman Midtrans</a>
                 <?php endif; ?>
+              <?php elseif (!$midtransConfigured): ?>
+                <div class="alert alert-info border-secondary-teal text-start">
+                  <h3 class="h6 fw-bold mb-2"><i class="bi bi-info-circle-fill text-teal me-1"></i> Mode Simulasi Lokal</h3>
+                  <p class="small text-secondary mb-3">Konfigurasi API Key Midtrans Anda belum diisi. Anda dapat mensimulasikan pembayaran lokal untuk mencoba seluruh fitur.</p>
+                  <form method="post" action="">
+                    <?php echo csrf_input(); ?>
+                    <input type="hidden" name="payment_id" value="<?php echo (int) $payment['id']; ?>">
+                    <button class="btn btn-primary w-100 btn-lg" type="submit" name="simulate_payment" value="1">
+                      <i class="bi bi-patch-check-fill me-2"></i> Simulasi Bayar Sukses
+                    </button>
+                  </form>
+                </div>
               <?php else: ?>
                 <div class="alert alert-warning mb-0">Token pembayaran belum tersedia.</div>
               <?php endif; ?>

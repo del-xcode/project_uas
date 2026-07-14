@@ -123,7 +123,10 @@ require __DIR__ . '/../includes/navbar.php';
 	<div class="content-card p-4">
 		<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
 			<div>
-				<h1 class="h3 mb-1">Pembayaran</h1>
+				<h1 class="h3 mb-1 d-flex align-items-center">
+					<i class="bi bi-wallet2 text-teal me-2"></i>
+					<span>Pembayaran</span>
+				</h1>
 				<p class="text-secondary mb-0">Lihat invoice dan status pembayaran booking Anda.</p>
 			</div>
 			<a class="btn btn-primary" href="<?php echo htmlspecialchars(app_url('user/booking.php')); ?>">Buat Booking Baru</a>
@@ -135,6 +138,13 @@ require __DIR__ . '/../includes/navbar.php';
 
 		<?php if ($pageSuccess !== null): ?>
 			<div class="alert alert-success"><?php echo htmlspecialchars($pageSuccess); ?></div>
+		<?php endif; ?>
+
+		<?php if (isset($_GET['simulated'])): ?>
+			<div class="alert alert-success border-secondary-teal">
+				<strong><i class="bi bi-check-circle-fill text-success me-1"></i> Simulasi Pembayaran Berhasil!</strong> 
+				Status pembayaran diperbarui menjadi <strong>Paid</strong> dan status booking diperbarui menjadi <strong>Process</strong>.
+			</div>
 		<?php endif; ?>
 
 		<?php if (!empty($pendingBookings)): ?>
